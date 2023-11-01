@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
-using TenmoServer.Models;
 
 namespace TenmoClient
 {
@@ -75,12 +74,7 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
-              
-                
-                decimal balance = tenmoApiService.GetAccount().Balance;
-                Console.WriteLine();
-                Console.WriteLine($"Your current account balance is: ${balance}");
-                Console.ReadLine();
+                GetBalance();
             }
 
             if (menuSelection == 2)
@@ -164,6 +158,10 @@ namespace TenmoClient
                 console.PrintError("Registration was unsuccessful.");
             }
             console.Pause();
+        }
+        private void GetBalance()
+        {
+            tenmoApiService.getAccount();
         }
     }
 }
