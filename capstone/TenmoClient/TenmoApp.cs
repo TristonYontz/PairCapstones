@@ -1,7 +1,9 @@
+
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using TenmoServer.Models;
 
 namespace TenmoClient
 {
@@ -74,7 +76,7 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
-                GetBalance();
+                console.PrintAccountBalance(tenmoApiService);
             }
 
             if (menuSelection == 2)
@@ -90,6 +92,7 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                console.PrintSendTEBucks(tenmoApiService);
             }
 
             if (menuSelection == 5)
@@ -158,10 +161,6 @@ namespace TenmoClient
                 console.PrintError("Registration was unsuccessful.");
             }
             console.Pause();
-        }
-        private void GetBalance()
-        {
-            tenmoApiService.getAccount();
         }
     }
 }

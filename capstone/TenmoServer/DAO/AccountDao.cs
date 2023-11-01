@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using TenmoServer.Models;
 
@@ -12,11 +13,14 @@ namespace TenmoServer.DAO
         }
 
         private string connectionString = "";
-        public Account GetAccountById(int userId)
+        public Account GetAccount(string userName)
         {
             Account account = new Account();
 
-            string sql = "SELECT balance, account_id, user_id FROM account WHERE user_id = @user_id";
+            string sql = "SELECT balance , account_id , account.user_id " +
+                    "FROM account " +
+                    "JOIN tenmo_user ON tenmo_user.user_id = account.user_id " + 
+                    "WHERE username = @username ";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -24,7 +28,7 @@ namespace TenmoServer.DAO
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@user_id", userId);
+                    cmd.Parameters.AddWithValue("@username", userName);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
