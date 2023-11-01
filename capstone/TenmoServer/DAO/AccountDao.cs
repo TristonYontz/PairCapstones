@@ -27,8 +27,6 @@ namespace TenmoServer.DAO
                 conn.Open();
                 try
                 {
-
-
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@username", usernName);

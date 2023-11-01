@@ -19,7 +19,7 @@ namespace TenmoServer.Controllers
         [HttpGet()]
         public ActionResult<Account> GetAccount()
         {
-            string userName = User.Identity.Name;
+           tring userName = User.Identity.Name;
            return dao.GetAccount(userName);
         }
 

@@ -75,8 +75,6 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
-              
-                
                 decimal balance = tenmoApiService.GetAccount().Balance;
                 Console.WriteLine();
                 Console.WriteLine($"Your current account balance is: ${balance}");
