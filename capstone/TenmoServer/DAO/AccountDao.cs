@@ -12,32 +12,45 @@ namespace TenmoServer.DAO
         }
 
         private string connectionString = "";
-        public Account GetAccountById(int userId)
+
+        public Account GetAccount(string usernName)
         {
             Account account = new Account();
 
-            string sql = "SELECT balance, account_id, user_id FROM account WHERE user_id = @user_id";
+            string sql = "SELECT balance , account_id , account.user_id " +
+                         "FROM account " +
+                         "JOIN tenmo_user ON tenmo_user.user_id = account.user_id " +
+                         "WHERE username = @username ";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                try
                 {
-                    cmd.Parameters.AddWithValue("@user_id", userId);
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        if (reader.Read())
+                        cmd.Parameters.AddWithValue("@username", usernName);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            account.Balance = Convert.ToDecimal(reader["balance"]);
-                            account.Id = Convert.ToInt32(reader["account_id"]);
-                            account.UserId = Convert.ToInt32(reader["user_id"]);
+                            if (reader.Read())
+                            {
+                                account.Balance = Convert.ToDecimal(reader["balance"]);
+                                account.Id = Convert.ToInt32(reader["account_id"]);
+                                account.UserId = Convert.ToInt32(reader["user_id"]);
+                            }
                         }
                     }
+                }
+                catch(SqlException ex)
+                {
+                    throw new Exception("ex message" ,ex);
                 }
             }
             return account;
         }
+
     }
 }

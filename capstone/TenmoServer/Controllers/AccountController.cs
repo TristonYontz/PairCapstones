@@ -16,10 +16,11 @@ namespace TenmoServer.Controllers
         {
             dao = new AccountDao(connectionString);
         }
-        [HttpGet("{Id}")]
-        public ActionResult<Account> GetAccount(int Id)
+        [HttpGet()]
+        public ActionResult<Account> GetAccount()
         {
-            return dao.GetAccountById(Id);
+            string userName = User.Identity.Name;
+           return dao.GetAccount(userName);
         }
 
     }
