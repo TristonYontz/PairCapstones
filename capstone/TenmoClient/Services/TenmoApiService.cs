@@ -19,6 +19,7 @@ namespace TenmoClient.Services
             IRestResponse<Account> response = client.Get<Account>(request);
 
             CheckForError(response);
+
             return response.Data;
         }
 
