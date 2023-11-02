@@ -15,7 +15,7 @@ namespace TenmoServer.DAO
             this.connectionString = connectionString;
         }
 
-        private string SqlUpdateAccount = "UPDATE account SET balance=@balance " +
+        private string SqlUpdateAccount = "UPDATE account SET balance = @balance " +
                 "WHERE account.user_id = @id ";
 
         private string SqlGetAccountByUserId = "SELECT balance , account_id , account.user_id " +
@@ -27,9 +27,9 @@ namespace TenmoServer.DAO
                    "JOIN tenmo_user ON tenmo_user.user_id = account.user_id " +
                    "WHERE username = @username ";
 
-        string SqlCreateTransferRequest = "INSERT INTO tenmo_user (username, password_hash, salt) " +
-                        "OUTPUT INSERTED.user_id " +
-                        "VALUES (@username, @password_hash, @salt)";
+        string SqlCreateTransferRequest = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount ) " +
+                        "OUTPUT INSERTED.transfer_id " +
+                        "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount)";
 
         private string connectionString = "";
 
@@ -37,52 +37,66 @@ namespace TenmoServer.DAO
         public Account GetAccount(string userName)
         {
             Account account = new Account();
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                conn.Open();
-
-
-                using (SqlCommand cmd = new SqlCommand(SqlGetAccount, conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@username", userName);
+                    conn.Open();
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
 
+                    using (SqlCommand cmd = new SqlCommand(SqlGetAccount, conn))
                     {
-                        if (reader.Read())
+                        cmd.Parameters.AddWithValue("@username", userName);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+
                         {
-                            account.Balance = Convert.ToDecimal(reader["balance"]);
-                            account.Id = Convert.ToInt32(reader["account_id"]);
-                            account.UserId = Convert.ToInt32(reader["user_id"]);
+                            if (reader.Read())
+                            {
+                                account.Balance = Convert.ToDecimal(reader["balance"]);
+                                account.Id = Convert.ToInt32(reader["account_id"]);
+                                account.UserId = Convert.ToInt32(reader["user_id"]);
+                            }
                         }
                     }
                 }
             }
+            catch(SqlException )
+            {
+                return null;
+            }
+
+ 
             return account;
         }
         public Account GetAccountByUserId(int userId)
         {
             Account account = new Account();
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                conn.Open();
-
-                using (SqlCommand cmd = new SqlCommand(SqlGetAccountByUserId, conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@user_id", userId);
+                    conn.Open();
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlCommand cmd = new SqlCommand(SqlGetAccountByUserId, conn))
                     {
-                        if (reader.Read())
+                        cmd.Parameters.AddWithValue("@user_id", userId);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            account.Balance = Convert.ToDecimal(reader["balance"]);
-                            account.Id = Convert.ToInt32(reader["account_id"]);
-                            account.UserId = Convert.ToInt32(reader["user_id"]);
+                            if (reader.Read())
+                            {
+                                account.Balance = Convert.ToDecimal(reader["balance"]);
+                                account.Id = Convert.ToInt32(reader["account_id"]);
+                                account.UserId = Convert.ToInt32(reader["user_id"]);
+                            }
                         }
                     }
                 }
+            }
+            catch (SqlException )
+            {
+                return null;
             }
             return account;
         }
@@ -115,7 +129,6 @@ namespace TenmoServer.DAO
         {
 
 
-
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -129,7 +142,6 @@ namespace TenmoServer.DAO
                     cmd.Parameters.AddWithValue("@amount", transfer.Amount);
                     cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
                     cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
-
                     cmd.ExecuteNonQuery();
                 }
 
@@ -138,17 +150,39 @@ namespace TenmoServer.DAO
 
         }
 
-        public Account MakeTransfer(TransferRequest transferRequest)
+        public Transfer MakeTransfer(TransferRequest transferRequest)
         {
+            Account accountTo = GetAccountByUserId(transferRequest.ToId);
+            Account accountFrom = GetAccountByUserId(transferRequest.FromId);
+            //if (accountTo.UserId == accountFrom.UserId || accountFrom == null || accountTo == null)
+            //{
+            //    return null;
+            //}
+
             Transfer transfer = new Transfer();
 
-            transfer.AccountTo =  GetAccountByUserId(transferRequest.ToId).Id;
-            transfer.AccountFrom = GetAccountByUserId(transferRequest.FromId).Id;
+            transfer.AccountFrom = accountFrom.Id;
+            transfer.AccountTo = accountTo.Id;
             transfer.Amount = transferRequest.Amount;
             transfer.TransferSatusId = 2;
             transfer.TransferTypeId = 2;
-            CreateTransferRequest(transfer);
-            
+
+            if (accountFrom.Balance > transfer.Amount)
+            {
+                accountTo.Balance += transferRequest.Amount;
+                accountFrom.Balance -= transferRequest.Amount;
+
+                CreateTransferRequest(transfer);
+
+                UpdateAccount(accountTo);
+                UpdateAccount(accountFrom);
+
+                return transfer;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

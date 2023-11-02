@@ -168,36 +168,45 @@ namespace TenmoClient
         public void SendTEBucks()
         {
             List<ApiUser> userList = new List<ApiUser>();
-            Account toAccount = new Account();
-            Account fromAccount = new Account();
+            TransferRequest transferRequest = new TransferRequest();
+            
             userList = tenmoApiService.GetUsers();
             console.PrintListOfUsers(userList);
             Console.Write("ID of user you're sending to[0]: ");
             int userId = console.PromptForInteger("Not valid user", 1000);
-            bool ifTrue = false;
-            for (int i = 0; i < userList.Count; i++)
-            {
-                if (userId == userList[i].UserId)
-                {
-                    ifTrue = true;
-                    break;
-                }
-            }
-            if (!ifTrue)
-            {
+            //bool ifTrue = false;
+            //for (int i = 0; i < userList.Count; i++)
+            //{
+            //    if (userId == userList[i].UserId)
+            //    {
+            //        ifTrue = true;
+            //        break;
+            //    }
+            //}
+            //if (!ifTrue)
+            //{
 
-                Console.WriteLine("Not valid user, please choose correct Id number!!!!");
+            //    Console.WriteLine("Not valid user, please choose correct Id number!!!!");
+            //    Console.ReadLine();
+            //    return;
+            //}
+
+            transferRequest.FromId = tenmoApiService.GetAccount().UserId;
+            transferRequest.ToId = userId;
+            
+            Console.Write("Enter the amount to send: ");
+            decimal userInput = decimal.Parse(Console.ReadLine());
+            transferRequest.Amount = userInput;
+            Transfer transfer =  tenmoApiService.AddTransfer(transferRequest);
+
+            if(transfer == null)
+            {
+                Console.WriteLine("Invalid amount");
                 Console.ReadLine();
                 return;
             }
-            toAccount = tenmoApiService.GetAccountByUserId(userId);
-            fromAccount = tenmoApiService.GetAccount();
-            Console.Write("Enter the amount to send: ");
-            decimal userInput = decimal.Parse(Console.ReadLine());
-            toAccount.Balance += userInput;
-            fromAccount.Balance -= userInput;
-            tenmoApiService.UpdateAccount(fromAccount);
-            tenmoApiService.UpdateAccount(toAccount);
+
+            Console.WriteLine($"{transfer.AccountFrom} {transfer.AccountTo} {transfer.Amount} {transfer.TransferSatusId} {transfer.TransferTypeId}");
             Console.WriteLine(tenmoApiService.GetAccount().Balance);
             Console.WriteLine(tenmoApiService.GetAccountByUserId(userId).Balance);
             Console.ReadLine();

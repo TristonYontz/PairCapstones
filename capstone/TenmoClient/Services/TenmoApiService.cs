@@ -42,18 +42,30 @@ namespace TenmoClient.Services
 
             return response.Data;
         }
-        public Account UpdateAccount(Account accountToUpdate)
+        public Transfer AddTransfer(TransferRequest transferRequest)
         {
-            RestRequest request = new RestRequest($"account/{accountToUpdate.UserId}");
+            RestRequest request = new RestRequest("account");
 
-            request.AddJsonBody(accountToUpdate);
+            request.AddJsonBody(transferRequest);
 
-            IRestResponse<Account> response = client.Put<Account>(request);
+            IRestResponse<Transfer> response = client.Post<Transfer>(request);
 
             CheckForError(response);
 
             return response.Data;
         }
+        //public Account UpdateAccount(Account accountToUpdate)
+        //{
+        //    RestRequest request = new RestRequest($"account/{accountToUpdate.UserId}");
+
+        //    request.AddJsonBody(accountToUpdate);
+
+        //    IRestResponse<Account> response = client.Put<Account>(request);
+
+        //    CheckForError(response);
+
+        //    return response.Data;
+        //}
         //public ApiUser GetUserById(int userId)
         //{
         //    RestRequest request = new RestRequest("user/" + UserId);

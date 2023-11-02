@@ -59,6 +59,19 @@ namespace TenmoServer.Controllers
                 return NotFound();
             }
         }
+        [HttpPost]
+        public ActionResult<Transfer> MakeTransfer(TransferRequest transferRequest)
+        {
+            try
+            {
+            Transfer transfer = dao.MakeTransfer(transferRequest);
+            return Created($"/account/{transfer}", transfer);
+            }
+            catch (DaoException)
+            {
+                return NotFound();
+            }
+        }
 
     }
 }
