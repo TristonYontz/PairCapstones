@@ -24,11 +24,12 @@ namespace TenmoServer.Controllers
         {
             return dao.GetUsers();
         }
-        //[HttpDelete("{id}")]
+        //[HttpGet("{id}")]
         //public ActionResult<User> GetUserById(int id)
         //{
         //    User user = new User();
         //    user = dao.GetUserById(id);
+
         //    if (user != null)
         //    {
         //        return user;

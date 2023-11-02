@@ -59,39 +59,23 @@ namespace TenmoClient.Services
             Console.WriteLine();
             Console.WriteLine($"Your current account balance is: ${balance}");
             Console.ReadLine();
+
+
         }
-        public void PrintSendTEBucks(TenmoApiService tenmoApiService)
+        public void PrintListOfUsers(List<ApiUser> userList)
+
         {
             //______________________________________________CLEAN CODE HERE_______________________________________________________________MOVE METHODS________________________________________________________
             Console.WriteLine("|-----------------Users-----------------|");
             Console.WriteLine("|   Id   |  Username                    |");
             Console.WriteLine("|--------+------------------------------|");
-            List<ApiUser> userList = new List<ApiUser>();
-            userList = tenmoApiService.GetUsers();
             for(int i = 0; i < userList.Count; i++)
             {
                 Console.WriteLine($"|  {userList[i].UserId}  |  {userList[i].Username.PadRight(28)}|");
             }
             Console.WriteLine("|---------------------------------------|");
             Console.WriteLine();
-            Console.Write("Id of the user you are sending to[0]: ");
-            int userId = int.Parse(Console.ReadLine());
-            bool ifTrue = false;
-            for (int i = 0; i < userList.Count; i++)
-            {
-                if(userId == userList[i].UserId)
-                {
-                    ifTrue = true;
-                    break;
-                }
-            }
-            if (!ifTrue)
-            {
-                Console.WriteLine("Not valid user, please choose correct Id number!!!!");
-                Console.ReadLine();
-                return;
-            }
-            Console.ReadLine();
+
         }
     }
 }

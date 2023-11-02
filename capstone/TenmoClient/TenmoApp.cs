@@ -94,7 +94,8 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
-                console.PrintSendTEBucks(tenmoApiService);
+                SendTEBucks();
+
             }
 
             if (menuSelection == 5)
@@ -163,6 +164,44 @@ namespace TenmoClient
                 console.PrintError("Registration was unsuccessful.");
             }
             console.Pause();
+        }
+        public void SendTEBucks()
+        {
+            List<ApiUser> userList = new List<ApiUser>();
+            Account toAccount = new Account();
+            Account fromAccount = new Account();
+            userList = tenmoApiService.GetUsers();
+            console.PrintListOfUsers(userList);
+            Console.Write("ID of user you're sending to[0]: ");
+            int userId = console.PromptForInteger("Not valid user", 1000);
+            bool ifTrue = false;
+            for (int i = 0; i < userList.Count; i++)
+            {
+                if (userId == userList[i].UserId)
+                {
+                    ifTrue = true;
+                    break;
+                }
+            }
+            if (!ifTrue)
+            {
+
+                Console.WriteLine("Not valid user, please choose correct Id number!!!!");
+                Console.ReadLine();
+                return;
+            }
+            toAccount = tenmoApiService.GetAccountByUserId(userId);
+            fromAccount = tenmoApiService.GetAccount();
+            Console.Write("Enter the amount to send: ");
+            decimal userInput = decimal.Parse(Console.ReadLine());
+            toAccount.Balance += userInput;
+            fromAccount.Balance -= userInput;
+            tenmoApiService.UpdateAccount(fromAccount);
+            tenmoApiService.UpdateAccount(toAccount);
+            Console.WriteLine(tenmoApiService.GetAccount().Balance);
+            Console.WriteLine(tenmoApiService.GetAccountByUserId(userId).Balance);
+            Console.ReadLine();
+
         }
     }
 }
