@@ -1,3 +1,4 @@
+
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
@@ -75,10 +76,9 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
-                decimal balance = tenmoApiService.GetAccount().Balance;
-                Console.WriteLine();
-                Console.WriteLine($"Your current account balance is: ${balance}");
-                Console.ReadLine();
+
+                console.PrintAccountBalance(tenmoApiService);
+
             }
 
             if (menuSelection == 2)
@@ -94,6 +94,7 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                console.PrintSendTEBucks(tenmoApiService);
             }
 
             if (menuSelection == 5)
