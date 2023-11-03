@@ -125,7 +125,7 @@ namespace TenmoServer.DAO
         }
 
 
-        public void  CreateTransferRequest(Transfer transfer)
+        public void  CreateTransferRequest(TransferRequest transferRequest, Account accountTo, Account accountFrom)
         {
 
 
@@ -137,11 +137,11 @@ namespace TenmoServer.DAO
                 using (SqlCommand cmd = new SqlCommand(SqlCreateTransferRequest, conn))
                 {
 
-                    cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
-                    cmd.Parameters.AddWithValue("@transfer_status_id",transfer.TransferSatusId  );
-                    cmd.Parameters.AddWithValue("@amount", transfer.Amount);
-                    cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
-                    cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+                    cmd.Parameters.AddWithValue("@transfer_type_id", 2);
+                    cmd.Parameters.AddWithValue("@transfer_status_id",2  );
+                    cmd.Parameters.AddWithValue("@amount", transferRequest.Amount);
+                    cmd.Parameters.AddWithValue("@account_to", accountTo.Id);
+                    cmd.Parameters.AddWithValue("@account_from", accountFrom.Id);
                     cmd.ExecuteNonQuery();
                 }
 
@@ -161,18 +161,12 @@ namespace TenmoServer.DAO
 
             Transfer transfer = new Transfer();
 
-            transfer.AccountFrom = accountFrom.Id;
-            transfer.AccountTo = accountTo.Id;
-            transfer.Amount = transferRequest.Amount;
-            transfer.TransferSatusId = 2;
-            transfer.TransferTypeId = 2;
-
             if (accountFrom.Balance > transfer.Amount)
             {
                 accountTo.Balance += transferRequest.Amount;
                 accountFrom.Balance -= transferRequest.Amount;
 
-                CreateTransferRequest(transfer);
+                CreateTransferRequest(transferRequest, accountTo, accountFrom);
 
                 UpdateAccount(accountTo);
                 UpdateAccount(accountFrom);

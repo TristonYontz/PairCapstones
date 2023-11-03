@@ -7,7 +7,7 @@ namespace TenmoServer.DAO
         public Account GetAccount(string usernName);
         public Account UpdateAccount(Account updatedAccount);
         public Account GetAccountByUserId(int UserId);
-        public void CreateTransferRequest(Transfer transfer);
+        public void CreateTransferRequest(TransferRequest transferRequest, Account accountTo, Account accountFrom);
         public Transfer MakeTransfer(TransferRequest transferRequest);
     }
 }

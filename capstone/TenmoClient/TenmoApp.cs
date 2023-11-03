@@ -84,6 +84,7 @@ namespace TenmoClient
             if (menuSelection == 2)
             {
                 // View your past transfers
+                ViewPastTransfers();
             }
 
             if (menuSelection == 3)
@@ -206,11 +207,18 @@ namespace TenmoClient
                 return;
             }
 
-            Console.WriteLine($"{transfer.AccountFrom} {transfer.AccountTo} {transfer.Amount} {transfer.TransferSatusId} {transfer.TransferTypeId}");
+            Console.WriteLine($"{transfer.AccountFromName} {transfer.AccountToName} {transfer.Amount} {transfer.TransferSatusId} {transfer.TransferTypeId}");
             Console.WriteLine(tenmoApiService.GetAccount().Balance);
             Console.WriteLine(tenmoApiService.GetAccountByUserId(userId).Balance);
             Console.ReadLine();
 
+        }
+        public void ViewPastTransfers()
+        {
+            List<Transfer> transferList = tenmoApiService.GetAllTransfer();
+            console.PrintListOfTransfer(transferList);
+            Console.WriteLine("Please enter transfer ID to view details ");
+            console.Pause();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace TenmoServer.Controllers
             dao = new AccountDao(connectionString);
         }
 
-        [HttpGet]
+        [HttpGet] 
         public ActionResult<Account> GetAccount()
         {
 
