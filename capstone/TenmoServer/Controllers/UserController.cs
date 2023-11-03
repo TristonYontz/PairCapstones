@@ -22,23 +22,8 @@ namespace TenmoServer.Controllers
         [HttpGet]
         public IList<User> GetUsers()
         {
-            return dao.GetUsers();
+            string userName = User.Identity.Name;
+            return dao.GetUsers(userName);
         }
-        //[HttpGet("{id}")]
-        //public ActionResult<User> GetUserById(int id)
-        //{
-        //    User user = new User();
-        //    user = dao.GetUserById(id);
-
-        //    if (user != null)
-        //    {
-        //        return user;
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-
     }
 }

@@ -168,59 +168,36 @@ namespace TenmoClient
         }
         public void SendTEBucks()
         {
-            List<ApiUser> userList = new List<ApiUser>();
-            TransferRequest transferRequest = new TransferRequest();
-            
-            userList = tenmoApiService.GetUsers();
+            List<ApiUser> userList = tenmoApiService.GetUsers();
             console.PrintListOfUsers(userList);
+               
             Console.Write("ID of user you're sending to[0]: ");
             int userId = console.PromptForInteger("Not valid user", 1000);
-            //bool ifTrue = false;
-            //for (int i = 0; i < userList.Count; i++)
-            //{
-            //    if (userId == userList[i].UserId)
-            //    {
-            //        ifTrue = true;
-            //        break;
-            //    }
-            //}
-            //if (!ifTrue)
-            //{
+            if(!console.CheckUsers(userList, userId))
+            {
+                return;
+            }
+            decimal userInput = console.PromptForDecimal("Enter the amount to send: ", 0);
 
-            //    Console.WriteLine("Not valid user, please choose correct Id number!!!!");
-            //    Console.ReadLine();
-            //    return;
-            //}
-
+            TransferRequest transferRequest = new TransferRequest();
             transferRequest.FromId = tenmoApiService.GetAccount().UserId;
             transferRequest.ToId = userId;
-            
-            Console.Write("Enter the amount to send: ");
-            decimal userInput = decimal.Parse(Console.ReadLine());
             transferRequest.Amount = userInput;
+
             string transfer =  tenmoApiService.AddTransfer(transferRequest);
             Console.WriteLine(transfer);
             console.Pause();
-            //if(transfer == null)
-            //{
-            //    Console.WriteLine("Invalid amount");
-            //    Console.ReadLine();
-            //    return;
-            //}
-
-           //Console.WriteLine($"{transfer.AccountFromName} {transfer.AccountToName} {transfer.Amount} {transfer.TransferSatusId} {transfer.TransferTypeId}");
-            //Console.WriteLine(tenmoApiService.GetAccount().Balance);
-            //Console.WriteLine(tenmoApiService.GetAccountByUserId(userId).Balance);
-            //Console.ReadLine();
-
         }
         public void ViewPastTransfers()
         {
             List<Transfer> transferList = tenmoApiService.GetAllTransfer();
             console.PrintListOfTransfer(transferList);
             int transferId =  console.PromptForInteger("Please enter transfer ID to view details (0 to cancel):", 3000);
+            if(!console.CheckTransferId(transferList, transferId))
+            {
+                return;
+            }
             console.PrintTransferDetail(transferList, transferId);
-            console.Pause();
         }
 
         

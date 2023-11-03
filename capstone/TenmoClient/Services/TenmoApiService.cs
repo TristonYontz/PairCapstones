@@ -22,16 +22,7 @@ namespace TenmoClient.Services
 
             return response.Data;
         }
-        public Account GetAccountByUserId(int userId)
-        {
-            RestRequest request = new RestRequest("account");
-
-            IRestResponse<Account> response = client.Get<Account>(request);
-
-            CheckForError(response);
-
-            return response.Data;
-        }
+        
         public List<ApiUser> GetUsers()
         {
             RestRequest request = new RestRequest("user");

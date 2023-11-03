@@ -18,7 +18,7 @@ namespace TenmoServer.Controllers
             dao = new AccountDao(connectionString);
         }
 
-        [HttpGet] 
+        [HttpGet]
         public ActionResult<Account> GetAccount()
         {
 
@@ -26,39 +26,7 @@ namespace TenmoServer.Controllers
             return dao.GetAccount(userName);
 
         }
-
-
-        [HttpGet("{id}")]
-        public ActionResult<Account> GetAccountByUserId(int id)
-        {
-            Account account = dao.GetAccountByUserId(id);
-            if (account != null)
-            {
-                return Ok(account);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPut("{id}")]
-        public ActionResult<Account> UpdateAccount(int id, Account account)
-        {
-            // The id on the URL takes precedence over the one in the payload, if any
-            account.Id = id;
-
-            try
-            {
-                Account updateAccount = dao.UpdateAccount(account);
-                return Ok(updateAccount);
-
-            }
-            catch (DaoException)
-            {
-                return NotFound();
-            }
-        }
+  
         [HttpPost]
         public ActionResult<string> MakeTransfer(TransferRequest transferRequest)
         {

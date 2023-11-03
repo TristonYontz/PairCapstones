@@ -103,8 +103,10 @@ namespace TenmoServer.DAO
 
         public Account UpdateAccount(Account updatedAccount)
         {
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+
                 conn.Open();
 
                 using (SqlCommand cmd = new SqlCommand(SqlUpdateAccount, conn))
@@ -113,6 +115,7 @@ namespace TenmoServer.DAO
                     cmd.Parameters.AddWithValue("@id", updatedAccount.UserId);
 
                     int count = cmd.ExecuteNonQuery();
+
                     if (count == 1)
                     {
                         return updatedAccount;
@@ -129,15 +132,14 @@ namespace TenmoServer.DAO
         public void  CreateTransferRequest(TransferRequest transferRequest, Account accountTo, Account accountFrom)
         {
 
-
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+
                 conn.Open();
 
                 // create user
                 using (SqlCommand cmd = new SqlCommand(SqlCreateTransferRequest, conn))
                 {
-
                     cmd.Parameters.AddWithValue("@transfer_type_id", 2);
                     cmd.Parameters.AddWithValue("@transfer_status_id",2  );
                     cmd.Parameters.AddWithValue("@amount", transferRequest.Amount);
@@ -145,22 +147,13 @@ namespace TenmoServer.DAO
                     cmd.Parameters.AddWithValue("@account_from", accountFrom.Id);
                     cmd.ExecuteNonQuery();
                 }
-
-
             }
-
         }
 
         public string MakeTransfer(TransferRequest transferRequest)
         {
             Account accountTo = GetAccountByUserId(transferRequest.ToId);
             Account accountFrom = GetAccountByUserId(transferRequest.FromId);
-            //if (accountTo.UserId == accountFrom.UserId || accountFrom == null || accountTo == null)
-            //{
-            //    return null;
-            //}
-
-           // Transfer transfer = new Transfer();
 
             if (accountFrom.Balance > transferRequest.Amount)
             {
@@ -176,10 +169,8 @@ namespace TenmoServer.DAO
             }
             else
             {
-                return "Denied";
+                return "Insufficient Funds!";
             }
-
-
         }
     }
 }

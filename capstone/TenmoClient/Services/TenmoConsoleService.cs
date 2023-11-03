@@ -77,6 +77,26 @@ namespace TenmoClient.Services
             Console.WriteLine();
 
         }
+        public bool CheckUsers(List<ApiUser> userList, int userId)
+        {
+            bool ifTrue = false;
+            for (int i = 0; i < userList.Count; i++)
+            {
+                if (userId == userList[i].UserId)
+                {
+                    ifTrue = true;
+                    break;
+                }
+            }
+            if (!ifTrue)
+            {
+
+                Console.WriteLine("Not valid user, please choose correct Id number!!!!");
+                Console.ReadLine();
+                
+            }
+            return ifTrue;
+        }
         public void PrintListOfTransfer(List<Transfer> transferList)
         {
             Console.WriteLine("|---------------------------------------|");
@@ -138,7 +158,27 @@ namespace TenmoClient.Services
                     break;
                 }
             }
-            Console.WriteLine("Please choose a valid transfer ID.");
+                   Console.WriteLine("Please choose a valid transfer ID.");
+        }
+        public bool CheckTransferId(List<Transfer> transferList, int transferId)
+        {
+            bool ifTrue = false;
+            for (int i = 0; i < transferList.Count; i++)
+            {
+                if (transferId == transferList[i].TransferId)
+                {
+                    ifTrue = true;
+                    break;
+                }
+            }
+            if (!ifTrue)
+            {
+
+                Console.WriteLine("Not valid transfer, please choose correct Id number!!!!");
+                Console.ReadLine();
+
+            }
+            return ifTrue;
         }
     }
 }

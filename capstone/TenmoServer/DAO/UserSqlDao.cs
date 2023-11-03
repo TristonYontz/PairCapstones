@@ -78,11 +78,11 @@ namespace TenmoServer.DAO
             return user;
         }
 
-        public IList<User> GetUsers()
+        public IList<User> GetUsers(string userName)
         {
             IList<User> users = new List<User>();
 
-            string sql = "SELECT user_id, username, password_hash, salt FROM tenmo_user";
+            string sql = "SELECT user_id, username, password_hash, salt FROM tenmo_user WHERE username != @username";
 
             try
             {
@@ -90,13 +90,17 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        User user = MapRowToUser(reader);
-                        users.Add(user);
+                        cmd.Parameters.AddWithValue("@username", userName);
+
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            User user = MapRowToUser(reader);
+                            users.Add(user);
+                        }
                     }
                 }
             }
