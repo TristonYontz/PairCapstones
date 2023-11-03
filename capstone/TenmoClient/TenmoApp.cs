@@ -198,27 +198,31 @@ namespace TenmoClient
             Console.Write("Enter the amount to send: ");
             decimal userInput = decimal.Parse(Console.ReadLine());
             transferRequest.Amount = userInput;
-            Transfer transfer =  tenmoApiService.AddTransfer(transferRequest);
+            string transfer =  tenmoApiService.AddTransfer(transferRequest);
+            Console.WriteLine(transfer);
+            console.Pause();
+            //if(transfer == null)
+            //{
+            //    Console.WriteLine("Invalid amount");
+            //    Console.ReadLine();
+            //    return;
+            //}
 
-            if(transfer == null)
-            {
-                Console.WriteLine("Invalid amount");
-                Console.ReadLine();
-                return;
-            }
-
-            Console.WriteLine($"{transfer.AccountFromName} {transfer.AccountToName} {transfer.Amount} {transfer.TransferSatusId} {transfer.TransferTypeId}");
-            Console.WriteLine(tenmoApiService.GetAccount().Balance);
-            Console.WriteLine(tenmoApiService.GetAccountByUserId(userId).Balance);
-            Console.ReadLine();
+           //Console.WriteLine($"{transfer.AccountFromName} {transfer.AccountToName} {transfer.Amount} {transfer.TransferSatusId} {transfer.TransferTypeId}");
+            //Console.WriteLine(tenmoApiService.GetAccount().Balance);
+            //Console.WriteLine(tenmoApiService.GetAccountByUserId(userId).Balance);
+            //Console.ReadLine();
 
         }
         public void ViewPastTransfers()
         {
             List<Transfer> transferList = tenmoApiService.GetAllTransfer();
             console.PrintListOfTransfer(transferList);
-            Console.WriteLine("Please enter transfer ID to view details ");
+            int transferId =  console.PromptForInteger("Please enter transfer ID to view details (0 to cancel):", 3000);
+            console.PrintTransferDetail(transferList, transferId);
             console.Pause();
         }
+
+        
     }
 }

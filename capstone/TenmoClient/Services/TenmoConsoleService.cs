@@ -79,22 +79,66 @@ namespace TenmoClient.Services
         }
         public void PrintListOfTransfer(List<Transfer> transferList)
         {
-            Console.WriteLine("----------------------");
-            Console.WriteLine("Transfers");
-            Console.WriteLine("ID        From/To         Amount");
-            Console.WriteLine("-------------------------------");
+            Console.WriteLine("|---------------------------------------|");
+            Console.WriteLine("| Transfers                             |");                       
+            Console.WriteLine("| ID        From/To         Amount      |");  
+            Console.WriteLine("|---------------------------------------|");
             for (int i = 0; i < transferList.Count; i++)
             {
                 if (transferList[i].TransferTypeId == 2)
                 {
-                    Console.WriteLine($"|  {transferList[i].TransferId}  |  {transferList[i].AccountToName.PadRight(28)}|${transferList[i].Amount}");
+                    Console.WriteLine($"| {Convert.ToString(transferList[i].TransferId).PadRight(8)}  {transferList[i].AccountToName.PadRight(15)} $ {Convert.ToString(transferList[i].Amount).PadRight(9)} |");
                 }
                 else
                 {
-                    Console.WriteLine($"|  {transferList[i].TransferId}  |  {transferList[i].AccountFromName.PadRight(28)}|${transferList[i].Amount}");
+                    Console.WriteLine($"| {Convert.ToString(transferList[i].TransferId).PadRight(8)}  {transferList[i].AccountFromName.PadRight(15)} ${Convert.ToString(transferList[i].Amount).PadRight(9)} |");
                 }
             }
-            Console.WriteLine("----------------");
+            Console.WriteLine("|---------------------------------------|");
+        }
+
+        public void PrintTransferDetail(List<Transfer> transferList,int transferId)
+        {
+            for (int i = 0; i < transferList.Count; i++)
+            {
+                if (transferList[i].TransferId == transferId)
+                {
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine("Transfer Details");
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine($"Id: {transferId}");
+                    Console.WriteLine($"From: {transferList[i].AccountFromName}");
+                    Console.WriteLine($"To: {transferList[i].AccountToName}");
+
+                    if (transferList[i].TransferTypeId == 2)
+                    {
+                          Console.WriteLine("Type: Send");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Type: Request");
+                    }
+
+                    if (transferList[i].TransferSatusId == 1)
+                    {
+                        Console.WriteLine("Status: Pending");
+                    }
+                    else if (transferList[i].TransferSatusId == 2)
+                    {
+                        Console.WriteLine("Status: Approved");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Status: Rejected");
+                    }
+
+                    Console.WriteLine($"Amount: {transferList[i].Amount}");
+                    Console.WriteLine("---------------------------------------");
+                    Pause();
+                    break;
+                }
+            }
+            Console.WriteLine("Please choose a valid transfer ID.");
         }
     }
 }

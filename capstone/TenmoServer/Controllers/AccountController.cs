@@ -60,12 +60,12 @@ namespace TenmoServer.Controllers
             }
         }
         [HttpPost]
-        public ActionResult<Transfer> MakeTransfer(TransferRequest transferRequest)
+        public ActionResult<string> MakeTransfer(TransferRequest transferRequest)
         {
             try
             {
-            Transfer transfer = dao.MakeTransfer(transferRequest);
-            return Created($"/account/{transfer}", transfer);
+                string transfer = dao.MakeTransfer(transferRequest);
+                return Created($"/account/{transfer}", transfer);
             }
             catch (DaoException)
             {

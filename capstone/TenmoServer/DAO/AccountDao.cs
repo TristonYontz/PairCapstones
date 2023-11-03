@@ -100,6 +100,7 @@ namespace TenmoServer.DAO
             }
             return account;
         }
+
         public Account UpdateAccount(Account updatedAccount)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -150,7 +151,7 @@ namespace TenmoServer.DAO
 
         }
 
-        public Transfer MakeTransfer(TransferRequest transferRequest)
+        public string MakeTransfer(TransferRequest transferRequest)
         {
             Account accountTo = GetAccountByUserId(transferRequest.ToId);
             Account accountFrom = GetAccountByUserId(transferRequest.FromId);
@@ -159,9 +160,9 @@ namespace TenmoServer.DAO
             //    return null;
             //}
 
-            Transfer transfer = new Transfer();
+           // Transfer transfer = new Transfer();
 
-            if (accountFrom.Balance > transfer.Amount)
+            if (accountFrom.Balance > transferRequest.Amount)
             {
                 accountTo.Balance += transferRequest.Amount;
                 accountFrom.Balance -= transferRequest.Amount;
@@ -171,12 +172,14 @@ namespace TenmoServer.DAO
                 UpdateAccount(accountTo);
                 UpdateAccount(accountFrom);
 
-                return transfer;
+                return "Approved";
             }
             else
             {
-                return null;
+                return "Denied";
             }
+
+
         }
     }
 }

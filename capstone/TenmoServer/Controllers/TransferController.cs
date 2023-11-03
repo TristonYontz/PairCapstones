@@ -25,5 +25,6 @@ namespace TenmoServer.Controllers
             Account account = daoAccount.GetAccount(userName);
             return dao.GetAllTransfer(account);
         }
+
     }
 }

@@ -42,13 +42,13 @@ namespace TenmoClient.Services
 
             return response.Data;
         }
-        public Transfer AddTransfer(TransferRequest transferRequest)
+        public string AddTransfer(TransferRequest transferRequest)
         {
             RestRequest request = new RestRequest("account");
 
             request.AddJsonBody(transferRequest);
 
-            IRestResponse<Transfer> response = client.Post<Transfer>(request);
+            IRestResponse<string> response = client.Post<string>(request);
 
             CheckForError(response);
 
